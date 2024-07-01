@@ -93,10 +93,12 @@ export const login = catchAsyncErrors(async (req, res, next) => {
 
 export const logout = catchAsyncErrors(async (req, res, next) => {
   try {
-    res
-      .clearCookie("token")
-      .status(200)
-      .json({ success: true, message: "Logged Out!" });
+    res.status(200).cookie("token", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+      sameSite: "None",
+      secure: true,
+    })({ success: true, message: "Logged Out!" });
   } catch (error) {
     return next(
       new ErrorHandler(error.message || "Internal Server Error", 500)
